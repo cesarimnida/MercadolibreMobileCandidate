@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cl_product"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/iv_photo_product"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/tv_title_product"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:alpha="0.4"
+        android:textColor="@color/text"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_total_value_product"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_photo_product"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <com.mercadolibre.mobilecandidate.customview.PriceTextView
+        android:id="@+id/tv_total_value_product"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/text"
+        android:textSize="16sp"
+        android:value="2899.50"
+        app:layout_constraintBottom_toTopOf="@+id/tv_installment_value_product"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/iv_photo_product"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title_product"
+        app:layout_constraintVertical_bias="0.459"
+        app:unit="R$" />
+
+    <com.mercadolibre.mobilecandidate.customview.PriceTextView
+        android:id="@+id/tv_installment_value_product"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/special_text"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_free_shipping_product"
+        app:layout_constraintEnd_toStartOf="@+id/tv_interest_free_product"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@+id/iv_photo_product"
+        app:layout_constraintTop_toBottomOf="@+id/tv_total_value_product"
+        app:layout_constraintVertical_bias="0.523" />
+
+    <TextView
+        android:id="@+id/tv_interest_free_product"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="8dp"
+        android:text="sem juros"
+        android:textColor="@color/special_text"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_installment_value_product"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_installment_value_product"
+        app:layout_constraintTop_toTopOf="@+id/tv_installment_value_product" />
+
+    <TextView
+        android:id="@+id/tv_free_shipping_product"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:text="Frete grátis"
+        android:textColor="@color/special_text"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_photo_product"
+        app:layout_constraintTop_toBottomOf="@+id/tv_installment_value_product" />
+</android.support.constraint.ConstraintLayout>
