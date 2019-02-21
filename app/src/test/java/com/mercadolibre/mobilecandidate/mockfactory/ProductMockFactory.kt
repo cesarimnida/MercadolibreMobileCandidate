@@ -1,7 +1,7 @@
 package com.mercadolibre.mobilecandidate.mockfactory
 
 import com.mercadolibre.mobilecandidate.model.Product
-import com.mercadolibre.mobilecandidate.model.Seller
+import com.mercadolibre.mobilecandidate.model.ProductDescription
 
 /**
  * ************************************************************
@@ -33,6 +33,10 @@ class ProductMockFactory {
             val products = ArrayList<Product>()
             for (i in 0..10) products.add(filled())
             return products
+        }
+
+        fun filledProductDescription(): ProductDescription {
+            return ProductDescription("text", "text", "date", "date")
         }
     }
 }

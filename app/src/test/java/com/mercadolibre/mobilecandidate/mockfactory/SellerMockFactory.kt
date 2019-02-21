@@ -18,5 +18,50 @@ class SellerMockFactory {
                 Seller.Reputation("platinum")
             )
         }
+
+        fun otherPowerSellerStatus(): Seller {
+            return Seller(
+                "id",
+                "nickname",
+                Seller.Address("city", "state"),
+                Seller.Reputation("")
+            )
+        }
+
+        fun nullPowerSellerStatus(): Seller {
+            return Seller(
+                "id",
+                "nickname",
+                Seller.Address("city", "state"),
+                Seller.Reputation(null)
+            )
+        }
+
+        fun nullSeller(): Seller {
+            return Seller(
+                "id",
+                null,
+                null,
+                null
+            )
+        }
+
+        fun nullCity(): Seller {
+            return Seller(
+                "id",
+                null,
+                Seller.Address(null, "state"),
+                null
+            )
+        }
+
+        fun nullState(): Seller {
+            return Seller(
+                "id",
+                null,
+                Seller.Address("city", null),
+                null
+            )
+        }
     }
 }

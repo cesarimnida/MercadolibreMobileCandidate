@@ -64,7 +64,9 @@ class SearchResultActivity : AppCompatActivity() {
     }
 
     private fun observeSearchResult() {
-        viewModel.searchResult.observe(this, Observer { searchResult -> et_search_bar.setText(searchResult!!.query) })
+        viewModel.searchResult.observe(
+            this,
+            Observer { searchResult -> et_search_bar.setText(searchResult!!.data!!.query) })
     }
 
     private fun setSearchListener() {

@@ -18,8 +18,9 @@ import io.reactivex.schedulers.Schedulers
  * Data : 19/02/2019
  * ************************************************************
  */
-class SearchViewModel(application: Application, private val searchService: SearchService = SearchService()) : AndroidViewModel(application) {
-    val searchResult = MutableLiveData<SearchResult>()
+class SearchViewModel(application: Application, private val searchService: SearchService = SearchService()) :
+    AndroidViewModel(application) {
+    val searchResult = MutableLiveData<StatusEvent<SearchResult>>()
     val products = MutableLiveData<ArrayList<Product>>()
 
 
@@ -52,22 +53,22 @@ class SearchViewModel(application: Application, private val searchService: Searc
     private fun searchResultObserver(): SingleObserver<SearchResult> {
         return object : SingleObserver<SearchResult> {
             override fun onSubscribe(d: Disposable) {
-
+                searchResult.value = StatusEvent.loading()
             }
 
             override fun onSuccess(searchResult: SearchResult) {
-                this@SearchViewModel.searchResult.value = searchResult
+                this@SearchViewModel.searchResult.value = StatusEvent.success(searchResult)
                 products.value = searchResult.results
             }
 
             override fun onError(e: Throwable) {
-                e.printStackTrace()
+                searchResult.value = StatusEvent.error(e)
             }
         }
     }
 
     fun setSearchResult(searchResult: SearchResult) {
-        this.searchResult.value = searchResult
+        this.searchResult.value = StatusEvent.success(searchResult)
         products.value = searchResult.results
     }
 

@@ -19,12 +19,13 @@ import io.reactivex.schedulers.Schedulers
  * Data : 19/02/2019
  * ************************************************************
  */
-class ProductViewModel(application: Application) : AndroidViewModel(application) {
+class ProductViewModel(application: Application, private val searchService: SearchService = SearchService()) :
+    AndroidViewModel(application) {
     val product = MutableLiveData<Product>()
-    val detailedProduct = MutableLiveData<Product>()
-    val productDescription = MutableLiveData<ProductDescription>()
-    val seller = MutableLiveData<Seller>()
-    private val searchService = SearchService()
+    val detailedProduct = MutableLiveData<StatusEvent<Product>>()
+    val productDescription = MutableLiveData<StatusEvent<ProductDescription>>()
+    val seller = MutableLiveData<StatusEvent<Seller>>()
+
     fun setProduct(product: Product) {
         this.product.value = product
     }
@@ -42,15 +43,15 @@ class ProductViewModel(application: Application) : AndroidViewModel(application)
     private fun detailedProductObserver(): SingleObserver<Product> {
         return object : SingleObserver<Product> {
             override fun onSubscribe(d: Disposable) {
-
+                detailedProduct.value = StatusEvent.loading()
             }
 
             override fun onSuccess(detailedProduct: Product) {
-                this@ProductViewModel.detailedProduct.value = detailedProduct
+                this@ProductViewModel.detailedProduct.value = StatusEvent.success(detailedProduct)
             }
 
             override fun onError(e: Throwable) {
-                e.printStackTrace()
+                detailedProduct.value = StatusEvent.error(e)
             }
         }
     }
@@ -68,15 +69,15 @@ class ProductViewModel(application: Application) : AndroidViewModel(application)
     private fun productDescriptionObserver(): SingleObserver<ProductDescription> {
         return object : SingleObserver<ProductDescription> {
             override fun onSubscribe(d: Disposable) {
-
+                productDescription.value = StatusEvent.loading()
             }
 
             override fun onSuccess(productDescription: ProductDescription) {
-                this@ProductViewModel.productDescription.value = productDescription
+                this@ProductViewModel.productDescription.value = StatusEvent.success(productDescription)
             }
 
             override fun onError(e: Throwable) {
-                e.printStackTrace()
+                productDescription.value = StatusEvent.error(e)
             }
         }
     }
@@ -94,15 +95,15 @@ class ProductViewModel(application: Application) : AndroidViewModel(application)
     private fun sellerObserver(): SingleObserver<Seller> {
         return object : SingleObserver<Seller> {
             override fun onSubscribe(d: Disposable) {
-
+                seller.value = StatusEvent.loading()
             }
 
             override fun onSuccess(seller: Seller) {
-                this@ProductViewModel.seller.value = seller
+                this@ProductViewModel.seller.value = StatusEvent.success(seller)
             }
 
             override fun onError(e: Throwable) {
-                e.printStackTrace()
+                seller.value = StatusEvent.error(e)
             }
         }
     }

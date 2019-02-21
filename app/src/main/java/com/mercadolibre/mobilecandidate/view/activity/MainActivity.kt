@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import com.mercadolibre.mobilecandidate.R
 import com.mercadolibre.mobilecandidate.model.SearchResult
 import com.mercadolibre.mobilecandidate.viewmodel.SearchViewModel
+import com.mercadolibre.mobilecandidate.viewmodel.StatusEvent
 import kotlinx.android.synthetic.main.content_search_bar.*
 
 /**
@@ -35,10 +36,19 @@ class MainActivity : AppCompatActivity() {
         viewModel.searchResult.observe(this, Observer { searchResult -> handleSearchResult(searchResult) })
     }
 
-    private fun handleSearchResult(searchResult: SearchResult?) {
+    private fun handleSearchResult(searchResult: StatusEvent<SearchResult>?) {
         if (searchResult == null) return
-        viewModel.removeSearchResult()
-        SearchResultActivity.startActivity(this, searchResult)
+        when (searchResult.status) {
+            StatusEvent.Status.SUCCESS -> {
+                viewModel.removeSearchResult()
+                SearchResultActivity.startActivity(this, searchResult.data!!)
+            }
+            StatusEvent.Status.LOADING -> {
+            }
+
+            StatusEvent.Status.ERROR -> {
+            }
+        }
     }
 
     private fun setSearchListener() {

@@ -7,13 +7,14 @@ import android.view.View
 import com.mercadolibre.mobilecandidate.RxImmediateSchedulerRule
 import com.mercadolibre.mobilecandidate.mockfactory.InstallmentMockFactory
 import com.mercadolibre.mobilecandidate.mockfactory.ProductMockFactory
+import com.mercadolibre.mobilecandidate.mockfactory.SearchResultMockFactory
 import com.mercadolibre.mobilecandidate.mockfactory.ShippingMockFactory
+import com.mercadolibre.mobilecandidate.model.Product
 import com.mercadolibre.mobilecandidate.model.SearchResult
 import com.mercadolibre.mobilecandidate.service.SearchService
 import io.reactivex.Single
 import org.junit.Assert
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -31,6 +32,7 @@ import org.mockito.junit.MockitoJUnitRunner
  * ************************************************************
  */
 @RunWith(MockitoJUnitRunner::class)
+@Suppress("UNCHECKED_CAST")
 class SearchViewModelTest {
     @Mock
     lateinit var application: Application
@@ -98,23 +100,55 @@ class SearchViewModelTest {
         assertEquals(View.GONE, SearchViewModel.interestFreeVisibility(InstallmentMockFactory.withRate()))
     }
 
-    @Suppress("UNCHECKED_CAST")
     @Test
-    fun queryProducts_valuesFilled() {
+    fun setSearchResult_anyValue() {
+        val searchResult = SearchResultMockFactory.filled()
+        searchViewModel.setSearchResult(searchResult)
+        assertEquals(searchResult, searchViewModel.searchResult.value!!.data)
+        assertEquals(searchResult.results, searchViewModel.products.value)
+    }
+
+    @Test
+    fun removeSearchResult_check() {
+        val searchResult = SearchResultMockFactory.filled()
+        searchViewModel.setSearchResult(searchResult)
+        assertEquals(searchResult, searchViewModel.searchResult.value!!.data)
+        assertEquals(searchResult.results, searchViewModel.products.value)
+        searchViewModel.removeSearchResult()
+        assertNull(searchViewModel.searchResult.value)
+    }
+
+    @Test
+    fun fetchProducts_valuesFilled() {
         val products = ProductMockFactory.simpleList()
+        val searchResult = SearchResultMockFactory.filled()
         Mockito.`when`(searchService.queryProducts("chromecast", 0)).thenAnswer {
-            return@thenAnswer Single.just(
-                SearchResult(
-                    "chromecast",
-                    ProductMockFactory.simpleList(),
-                    SearchResult.Paging(10, 0, 50, 10)
-                )
-            )
+            return@thenAnswer Single.just(searchResult)
         }
-        val observer = Mockito.mock(Observer::class.java) as Observer<SearchResult>
-        searchViewModel.searchResult.observeForever(observer)
+        val searchResultObserver = Mockito.mock(Observer::class.java) as Observer<StatusEvent<SearchResult>>
+        val productObserver = Mockito.mock(Observer::class.java) as Observer<ArrayList<Product>>
+        searchViewModel.searchResult.observeForever(searchResultObserver)
+        searchViewModel.products.observeForever(productObserver)
         searchViewModel.fetchProducts("chromecast")
         assertNotNull(searchViewModel.searchResult.value)
+        assertEquals(searchViewModel.searchResult.value!!.status, StatusEvent.Status.SUCCESS)
+        assertEquals(searchViewModel.searchResult.value!!.data, searchResult)
         assertEquals(searchViewModel.products.value, products)
+    }
+
+    @Test
+    fun fetchProducts_exceptionThrown() {
+        Mockito.`when`(searchService.queryProducts("chromecast", 0)).thenAnswer {
+            return@thenAnswer Single.error<Exception>(Exception())
+        }
+        val searchResultObserver = Mockito.mock(Observer::class.java) as Observer<StatusEvent<SearchResult>>
+        val productObserver = Mockito.mock(Observer::class.java) as Observer<ArrayList<Product>>
+        searchViewModel.searchResult.observeForever(searchResultObserver)
+        searchViewModel.products.observeForever(productObserver)
+        searchViewModel.fetchProducts("chromecast")
+        assertNotNull(searchViewModel.searchResult.value)
+        assertEquals(searchViewModel.searchResult.value!!.status, StatusEvent.Status.ERROR)
+        assertNull(searchViewModel.searchResult.value!!.data)
+        assertNull(searchViewModel.products.value)
     }
 }

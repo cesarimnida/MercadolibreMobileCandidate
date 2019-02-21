@@ -16,6 +16,7 @@ import com.mercadolibre.mobilecandidate.view.adapter.AttributesAdapter
 import com.mercadolibre.mobilecandidate.view.adapter.PictureAdapter
 import com.mercadolibre.mobilecandidate.viewmodel.ProductViewModel
 import com.mercadolibre.mobilecandidate.viewmodel.SearchViewModel
+import com.mercadolibre.mobilecandidate.viewmodel.StatusEvent
 import kotlinx.android.synthetic.main.activity_product_detail.*
 import kotlinx.android.synthetic.main.content_product_detail.*
 import kotlinx.android.synthetic.main.content_seller_info.*
@@ -119,12 +120,21 @@ class ProductDetailActivity : AppCompatActivity() {
     }
 
     private fun observeDetailedProduct() {
-        viewModel.detailedProduct.observe(this, Observer { detailedProduct -> handleDetailedProduct(detailedProduct) })
+        viewModel.detailedProduct.observe(this, Observer { statusEvent -> handleDetailedProduct(statusEvent) })
     }
 
-    private fun handleDetailedProduct(detailedProduct: Product?) {
+    private fun handleDetailedProduct(detailedProduct: StatusEvent<Product>?) {
         if (detailedProduct == null) return
-        setPhotosRecyclerView(detailedProduct.pictures)
+        when (detailedProduct.status) {
+            StatusEvent.Status.SUCCESS -> {
+                setPhotosRecyclerView(detailedProduct.data!!.pictures)
+            }
+            StatusEvent.Status.LOADING -> {
+            }
+
+            StatusEvent.Status.ERROR -> {
+            }
+        }
     }
 
     private fun setPhotosRecyclerView(pictures: ArrayList<Product.Picture>?) {
@@ -139,23 +149,42 @@ class ProductDetailActivity : AppCompatActivity() {
             Observer { productDescription -> handleProductDescription(productDescription) })
     }
 
-    private fun handleProductDescription(productDescription: ProductDescription?) {
+    private fun handleProductDescription(productDescription: StatusEvent<ProductDescription>?) {
         if (productDescription == null) {
             tv_description_label_product_detail.visibility = View.GONE
             tv_description_product_detail.visibility = View.GONE
             return
         }
-        tv_description_product_detail.text = productDescription.plain_text
+        when (productDescription.status) {
+            StatusEvent.Status.SUCCESS -> {
+                tv_description_product_detail.text = productDescription.data!!.plain_text
+            }
+            StatusEvent.Status.LOADING -> {
+            }
+
+            StatusEvent.Status.ERROR -> {
+            }
+        }
     }
 
     private fun observeSeller() {
         viewModel.seller.observe(this, Observer { seller -> handleSeller(seller) })
     }
 
-    private fun handleSeller(seller: Seller?) {
+    private fun handleSeller(seller: StatusEvent<Seller>?) {
         if (seller == null) return
-        tv_seller_name_product_detail.text = seller.nickname
-        tv_seller_platinum_product_detail.visibility = viewModel.platinumVisibility(seller.seller_reputation)
-        tv_seller_location_product_detail.text = viewModel.sellerLocation(seller.address)
+        when (seller.status) {
+            StatusEvent.Status.SUCCESS -> {
+                tv_seller_name_product_detail.text = seller.data!!.nickname
+                tv_seller_platinum_product_detail.visibility =
+                    viewModel.platinumVisibility(seller.data.seller_reputation)
+                tv_seller_location_product_detail.text = viewModel.sellerLocation(seller.data.address)
+            }
+            StatusEvent.Status.LOADING -> {
+            }
+
+            StatusEvent.Status.ERROR -> {
+            }
+        }
     }
 }
