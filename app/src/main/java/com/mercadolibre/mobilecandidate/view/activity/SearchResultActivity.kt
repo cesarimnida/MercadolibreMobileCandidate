@@ -102,7 +102,7 @@ class SearchResultActivity : AppCompatActivity() {
         when (searchResult.status) {
             StatusEvent.Status.SUCCESS -> {
                 et_search_bar.setText(searchResult.data!!.query)
-                et_search_bar.setSelection(searchResult.data.query.length)
+                et_search_bar.setSelection(searchResult.data.query?.length ?: 0)
                 setupPaging(searchResult.data.paging)
                 stopLoading()
             }

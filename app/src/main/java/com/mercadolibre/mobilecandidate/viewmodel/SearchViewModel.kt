@@ -49,6 +49,7 @@ class SearchViewModel(application: Application) :
     }
 
     fun fetchProducts(query: String?, offset: Int = 0) {
+        if (query == null || query.isBlank()) return
         val observer = searchResultObserver()
         searchService
             .queryProducts(query, offset)

@@ -9,7 +9,7 @@ import java.io.Serializable
  * ************************************************************
  */
 class SearchResult(
-    val query: String,
+    val query: String?,
     val results: ArrayList<Product>,
     val paging: Paging
 ) : Serializable {
