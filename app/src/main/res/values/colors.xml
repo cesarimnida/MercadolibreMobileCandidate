@@ -2,9 +2,9 @@
 <resources>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">#fddc13</color>
+    <color name="colorPrimaryDark">#f5d415</color>
+    <color name="colorAccent">#3483fa</color>
     <color name="button">#3483FA</color>
     <color name="button_stroke">#A5C5FF</color>
     <color name="search">#787878</color>

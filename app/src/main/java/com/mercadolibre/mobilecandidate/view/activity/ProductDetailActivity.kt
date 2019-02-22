@@ -79,10 +79,11 @@ class ProductDetailActivity : AppCompatActivity() {
         pt_price_product_detail.setValue(product.price)
         pt_price_product_detail.setUnit(product.currency_id)
         setReview(product.reviews)
-        tv_condition_product_detail.text = product.condition
+        tv_condition_product_detail.text = getString(viewModel.productCondition(product.condition))
         setInstallment(product.installments)
         tv_free_shipping_product_detail.visibility = SearchViewModel.freeShippingVisibility(product.shipping)
-        tv_available_quantity_product_detail.text = product.available_quantity
+        tv_available_quantity_product_detail.text =
+            String.format(getString(R.string.tv_available_quantity_product_detail), product.available_quantity)
     }
 
     private fun setReview(review: Product.Review?) {
@@ -92,17 +93,17 @@ class ProductDetailActivity : AppCompatActivity() {
             return
         }
         cr_rating_product_detail.rating = review.rating_average?.toFloat() ?: 0f
-        tv_rating_product_detail.text = review.total?.toString() ?: "0"
+        tv_rating_product_detail.text =
+            String.format(getString(R.string.tv_rating_product_detail), review.total?.toString() ?: "0")
     }
 
     private fun setInstallment(installment: Product.Installment?) {
         if (installment == null) {
-            tv_installment_quantity_product_detail.visibility = View.GONE
             pt_installment_price_product_detail.visibility = View.GONE
             return
         }
-        tv_installment_quantity_product_detail.text = installment.quantity?.toString() ?: "0"
         pt_installment_price_product_detail.setValue(installment.amount?.toString() ?: "0")
+        pt_installment_price_product_detail.setUnit(SearchViewModel.buildInstallmentUnit(installment))
     }
 
     private fun setAttributes(attributes: ArrayList<Product.Attribute>?) {
@@ -128,13 +129,30 @@ class ProductDetailActivity : AppCompatActivity() {
         when (detailedProduct.status) {
             StatusEvent.Status.SUCCESS -> {
                 setPhotosRecyclerView(detailedProduct.data!!.pictures)
+                stopPictureLoading()
             }
             StatusEvent.Status.LOADING -> {
+                startPictureLoading()
             }
-
             StatusEvent.Status.ERROR -> {
+                stopPictureLoading()
+                showPictureError()
             }
         }
+    }
+
+    private fun startPictureLoading() {
+        pb_pictures_product_detail.visibility = View.VISIBLE
+        rv_pictures_product_detail.visibility = View.GONE
+    }
+
+    private fun stopPictureLoading() {
+        pb_pictures_product_detail.visibility = View.GONE
+        rv_pictures_product_detail.visibility = View.VISIBLE
+    }
+
+    private fun showPictureError() {
+        cv_empty_photos_product_detail.visibility = View.VISIBLE
     }
 
     private fun setPhotosRecyclerView(pictures: ArrayList<Product.Picture>?) {
@@ -158,13 +176,30 @@ class ProductDetailActivity : AppCompatActivity() {
         when (productDescription.status) {
             StatusEvent.Status.SUCCESS -> {
                 tv_description_product_detail.text = productDescription.data!!.plain_text
+                stopProductDescriptionLoading()
             }
             StatusEvent.Status.LOADING -> {
+                startProductDescriptionLoading()
             }
-
             StatusEvent.Status.ERROR -> {
+                stopProductDescriptionLoading()
+                showProductDescriptionError()
             }
         }
+    }
+
+    private fun startProductDescriptionLoading() {
+        pb_description_product_detail.visibility = View.VISIBLE
+        tv_description_product_detail.visibility = View.GONE
+    }
+
+    private fun stopProductDescriptionLoading() {
+        pb_description_product_detail.visibility = View.GONE
+        tv_description_product_detail.visibility = View.VISIBLE
+    }
+
+    private fun showProductDescriptionError() {
+        tv_description_product_detail.text = getString(R.string.product_description_error)
     }
 
     private fun observeSeller() {
@@ -178,13 +213,33 @@ class ProductDetailActivity : AppCompatActivity() {
                 tv_seller_name_product_detail.text = seller.data!!.nickname
                 tv_seller_platinum_product_detail.visibility =
                     viewModel.platinumVisibility(seller.data.seller_reputation)
+                iv_seller_platinum_product_detail.visibility =
+                    viewModel.platinumVisibility(seller.data.seller_reputation)
                 tv_seller_location_product_detail.text = viewModel.sellerLocation(seller.data.address)
+                stopSellerLoading()
             }
             StatusEvent.Status.LOADING -> {
+                startSellerLoading()
             }
-
             StatusEvent.Status.ERROR -> {
+                stopSellerLoading()
+                showSellerError()
             }
         }
+    }
+
+    private fun startSellerLoading() {
+        pb_seller_info_product_detail.visibility = View.VISIBLE
+        cl_seller_info_product_detail.visibility = View.GONE
+    }
+
+    private fun stopSellerLoading() {
+        pb_seller_info_product_detail.visibility = View.GONE
+        cl_seller_info_product_detail.visibility = View.VISIBLE
+    }
+
+    private fun showSellerError() {
+        cl_seller_info_product_detail.visibility = View.GONE
+        cv_empty_seller_info_product_detail.visibility = View.VISIBLE
     }
 }

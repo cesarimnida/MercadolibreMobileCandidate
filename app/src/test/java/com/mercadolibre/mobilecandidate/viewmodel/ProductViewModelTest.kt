@@ -4,6 +4,7 @@ import android.app.Application
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.arch.lifecycle.Observer
 import android.view.View
+import com.mercadolibre.mobilecandidate.R
 import com.mercadolibre.mobilecandidate.RxImmediateSchedulerRule
 import com.mercadolibre.mobilecandidate.mockfactory.ProductMockFactory
 import com.mercadolibre.mobilecandidate.mockfactory.SellerMockFactory
@@ -109,6 +110,30 @@ class ProductViewModelTest {
         assertEquals(
             "city/-",
             productViewModel.sellerLocation(SellerMockFactory.nullState().address)
+        )
+    }
+
+    @Test
+    fun productCondition_nullCondition() {
+        assertEquals(
+            R.string.empty_string,
+            productViewModel.productCondition(null)
+        )
+    }
+
+    @Test
+    fun productCondition_newCondition() {
+        assertEquals(
+            R.string.new_product,
+            productViewModel.productCondition("new")
+        )
+    }
+
+    @Test
+    fun productCondition_anyCondition() {
+        assertEquals(
+            R.string.used_product,
+            productViewModel.productCondition("anynonemptystring")
         )
     }
 

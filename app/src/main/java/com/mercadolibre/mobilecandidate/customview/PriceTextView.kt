@@ -16,11 +16,21 @@ import kotlinx.android.synthetic.main.view_price_text_view.view.*
  * Data : 19/02/2019
  * ************************************************************
  */
-class PriceTextView(context: Context, attrs: AttributeSet) : ConstraintLayout(context, attrs) {
+class PriceTextView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
+    ConstraintLayout(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
+    constructor(context: Context) : this(context, null, 0)
+
     private var integerValue = "0"
     private var decimalValue = "0"
     private var unit = ""
-    private var textSize = 0
+    private var textSize = defaultTextSize()
+
+    private fun defaultTextSize(): Int {
+        val textSize = (12 * resources.displayMetrics.density)
+        return textSize.toInt()
+    }
+
     private var textColor = 0
 
     init {
@@ -33,7 +43,7 @@ class PriceTextView(context: Context, attrs: AttributeSet) : ConstraintLayout(co
         val totalValue = attributes.getString(R.styleable.PriceTextView_android_value) ?: "0.0"
         setValues(totalValue)
         unit = attributes.getString(R.styleable.PriceTextView_unit) ?: ""
-        textSize = attributes.getDimensionPixelSize(R.styleable.PriceTextView_android_textSize, 0)
+        textSize = attributes.getDimensionPixelSize(R.styleable.PriceTextView_android_textSize, defaultTextSize())
         textColor = attributes.getColor(
             R.styleable.PriceTextView_android_textColor,
             ContextCompat.getColor(context, R.color.text)

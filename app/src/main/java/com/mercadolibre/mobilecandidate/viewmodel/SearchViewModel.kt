@@ -11,6 +11,7 @@ import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 
 /**
  * ************************************************************
@@ -18,8 +19,16 @@ import io.reactivex.schedulers.Schedulers
  * Data : 19/02/2019
  * ************************************************************
  */
-class SearchViewModel(application: Application, private val searchService: SearchService = SearchService()) :
+class SearchViewModel(application: Application) :
     AndroidViewModel(application) {
+    constructor(
+        application: Application,
+        searchService: SearchService
+    ) : this(application) {
+        this.searchService = searchService
+    }
+
+    private var searchService: SearchService = SearchService()
     val searchResult = MutableLiveData<StatusEvent<SearchResult>>()
     val products = MutableLiveData<ArrayList<Product>>()
 
@@ -63,6 +72,7 @@ class SearchViewModel(application: Application, private val searchService: Searc
 
             override fun onError(e: Throwable) {
                 searchResult.value = StatusEvent.error(e)
+                Timber.e(e)
             }
         }
     }
@@ -74,5 +84,69 @@ class SearchViewModel(application: Application, private val searchService: Searc
 
     fun removeSearchResult() {
         this.searchResult.value = null
+    }
+
+    fun navigateToPreviousPage() {
+        if (!isSearchResultStatusSuccess() || !isPreviousOffsetValid()) return
+        val currentOffset = searchResult.value!!.data!!.paging.offset
+        val limit = searchResult.value!!.data!!.paging.limit
+        fetchProducts(
+            searchResult.value!!.data!!.query,
+            currentOffset - limit
+        )
+    }
+
+    private fun isSearchResultStatusSuccess(): Boolean {
+        return searchResult.value!!.status == StatusEvent.Status.SUCCESS
+    }
+
+    private fun isPreviousOffsetValid(): Boolean {
+        val offset = searchResult.value?.data?.paging?.offset ?: -1
+        val limit = searchResult.value?.data?.paging?.limit ?: 0
+        return offset >= limit
+    }
+
+    fun navigateToNextPage() {
+        if (!isSearchResultStatusSuccess() || !isNextOffsetValid()) return
+        val currentOffset = searchResult.value!!.data!!.paging.offset
+        val limit = searchResult.value!!.data!!.paging.limit
+        fetchProducts(
+            searchResult.value!!.data!!.query,
+            currentOffset + limit
+        )
+    }
+
+    private fun isNextOffsetValid(): Boolean {
+        val offset = searchResult.value?.data?.paging?.offset ?: 0
+        val limit = searchResult.value?.data?.paging?.limit ?: 0
+        val total = searchResult.value?.data?.paging?.total ?: Int.MAX_VALUE
+        return offset + limit <= total
+    }
+
+    fun currentPage(paging: SearchResult.Paging): String {
+        val currentPage = calculateCurrentPage(paging) + 1
+        return currentPage.toString()
+    }
+
+    private fun calculateCurrentPage(paging: SearchResult.Paging): Int {
+        return paging.offset / paging.limit
+    }
+
+    fun previousPage(paging: SearchResult.Paging): String {
+        val previousPage = calculateCurrentPage(paging)
+        return previousPage.toString()
+    }
+
+    fun nextPage(paging: SearchResult.Paging): String {
+        val nextPage = calculateCurrentPage(paging) + 2
+        return nextPage.toString()
+    }
+
+    fun previousPageVisibility(): Int {
+        return if (isPreviousOffsetValid()) View.VISIBLE else View.INVISIBLE
+    }
+
+    fun nextPageVisibility(): Int {
+        return if (isNextOffsetValid()) View.VISIBLE else View.INVISIBLE
     }
 }

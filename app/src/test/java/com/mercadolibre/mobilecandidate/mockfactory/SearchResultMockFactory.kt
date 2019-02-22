@@ -14,7 +14,31 @@ class SearchResultMockFactory {
             return SearchResult(
                 "chromecast",
                 ProductMockFactory.simpleList(),
-                SearchResult.Paging(10, 0, 50, 10)
+                SearchResult.Paging(200, 0, 50, 200)
+            )
+        }
+
+        fun secondPage(): SearchResult {
+            return SearchResult(
+                "chromecast",
+                ProductMockFactory.simpleList(),
+                SearchResult.Paging(200, 50, 50, 200)
+            )
+        }
+
+        fun thirdPage(): SearchResult {
+            return SearchResult(
+                "chromecast",
+                ProductMockFactory.simpleList(),
+                SearchResult.Paging(200, 100, 50, 200)
+            )
+        }
+
+        fun lastPage(): SearchResult {
+            return SearchResult(
+                "chromecast",
+                ProductMockFactory.simpleList(),
+                SearchResult.Paging(200, 200, 50, 200)
             )
         }
     }

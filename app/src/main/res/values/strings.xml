@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">MobileCandidate</string>
+    <string name="status_error">Falha ao fazer busca, tente novamente mais tarde</string>
+    <string name="tv_title_empty_search_list">Não há anúncios que coincidam com a sua busca</string>
+    <string name="tv_orthography_empty_search_list">• Revise a ortografia da palavra.</string>
+    <string name="tv_less_words_empty_search_list">• Utilize palavras mais genéricas ou menos palavras.</string>
+    <string name="tv_seller_info_label_product_detail">Informações do vendedor</string>
+    <string name="tv_attributes_product_detail">Características</string>
+    <string name="tv_description_label_product_detail">Descrição</string>
+    <string name="tv_seller_location_label_product_detail">Localização</string>
+    <string name="tv_seller_platinum_product_detail">MercadoLíder Platinum</string>
+    <string name="tv_title_empty_seller_info">Sem vendedor!</string>
+    <string name="tv_message_empty_seller_info">Algum problema pode ter ocorrido enquanto buscávamos o vendedor</string>
+    <string name="tv_rating_product_detail">%s reviews</string>
+    <string name="tv_available_quantity_product_detail">%s disponíveis</string>
+    <string name="empty_string" />
+    <string name="new_product">Produto novo</string>
+    <string name="used_product">Produto usado</string>
+    <string name="tv_free_shipping_product_detail">Frete grátis</string>
+    <string name="tv_free_of_interest_product_detail">Sem juros</string>
+    <string name="product_description_error">Não foi encontrada nenhuma descrição para este produto.</string>
+    <string name="tv_title_empty_photos">Nenhuma foto encontrada!</string>
 </resources>

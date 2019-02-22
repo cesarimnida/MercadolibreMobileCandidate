@@ -4,6 +4,7 @@ import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.MutableLiveData
 import android.view.View
+import com.mercadolibre.mobilecandidate.R
 import com.mercadolibre.mobilecandidate.model.Product
 import com.mercadolibre.mobilecandidate.model.ProductDescription
 import com.mercadolibre.mobilecandidate.model.Seller
@@ -12,6 +13,7 @@ import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 
 /**
  * ************************************************************
@@ -19,8 +21,16 @@ import io.reactivex.schedulers.Schedulers
  * Data : 19/02/2019
  * ************************************************************
  */
-class ProductViewModel(application: Application, private val searchService: SearchService = SearchService()) :
+class ProductViewModel(application: Application) :
     AndroidViewModel(application) {
+    constructor(
+        application: Application,
+        searchService: SearchService
+    ) : this(application) {
+        this.searchService = searchService
+    }
+
+    private var searchService: SearchService = SearchService()
     val product = MutableLiveData<Product>()
     val detailedProduct = MutableLiveData<StatusEvent<Product>>()
     val productDescription = MutableLiveData<StatusEvent<ProductDescription>>()
@@ -52,6 +62,7 @@ class ProductViewModel(application: Application, private val searchService: Sear
 
             override fun onError(e: Throwable) {
                 detailedProduct.value = StatusEvent.error(e)
+                Timber.e(e)
             }
         }
     }
@@ -78,6 +89,7 @@ class ProductViewModel(application: Application, private val searchService: Sear
 
             override fun onError(e: Throwable) {
                 productDescription.value = StatusEvent.error(e)
+                Timber.e(e)
             }
         }
     }
@@ -104,6 +116,7 @@ class ProductViewModel(application: Application, private val searchService: Sear
 
             override fun onError(e: Throwable) {
                 seller.value = StatusEvent.error(e)
+                Timber.e(e)
             }
         }
     }
@@ -118,5 +131,13 @@ class ProductViewModel(application: Application, private val searchService: Sear
         val city = address.city ?: "-"
         val state = address.state ?: "-"
         return "$city/$state"
+    }
+
+    fun productCondition(condition: String?): Int {
+        return when (condition) {
+            null -> R.string.empty_string
+            "new" -> R.string.new_product
+            else -> R.string.used_product
+        }
     }
 }
